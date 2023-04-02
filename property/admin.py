@@ -7,6 +7,7 @@ class OwnerInline(admin.TabularInline):
     raw_id_fields = ['owner']
 
 
+@admin.register(Flat)
 class FlatAdmin(admin.ModelAdmin):
     search_fields = ['town', 'address']
     readonly_fields = ['created_at']
@@ -22,15 +23,13 @@ class FlatAdmin(admin.ModelAdmin):
     inlines = [OwnerInline]
 
 
+@admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
-    raw_id_fields = ['who_complained', 'complained_address']
+    raw_id_fields = ['user', 'flat']
 
 
+@admin.register(Owner)
 class OwnerAdmin(admin.ModelAdmin):
     raw_id_fields = ['apartments']
     list_display = ['fio', 'phonenumber', 'pure_phonenumber']
 
-
-admin.site.register(Flat, FlatAdmin)
-admin.site.register(Complaint, ComplaintAdmin)
-admin.site.register(Owner, OwnerAdmin)

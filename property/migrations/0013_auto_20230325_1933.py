@@ -6,12 +6,11 @@ from django.db import migrations
 def fill_owner_model(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')
-    for flat in Flat.objects.all():
-        Owner.objects.get_or_create(
-            fio=flat.owner,
-            phonenumber=flat.owners_phonenumber,
-            pure_phonenumber=flat.owner_pure_phone,
-        )
+
+    flats = Flat.objects.all().values('owner', 'owners_phonenumber', 'owner_pure_phone')
+    owners = [Owner(fio=flat['owner'], phonenumber=flat['owners_phonenumber'], pure_phonenumber=flat['owner_pure_phone']) for flat in flats]
+
+    Owner.objects.bulk_create(owners, ignore_conflicts=True)
 
 
 def rollback_owner_model(apps, schema_editor):
